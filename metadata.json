@@ -1,0 +1,7 @@
+{
+  "name": "Copy of Copy of of GPU AI 8",
+  "description": "An AI-powered assistant for university students, providing specialized help in various fields such as IT, Nursing, Medicine, Engineering, and Veterinary science. Each AI is trained to answer questions only within its specific domain.\n",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}

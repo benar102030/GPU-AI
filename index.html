@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f172a" />
+    <title>GPU AI</title>
+    <!-- لینکی مانیفێست بۆ Progressive Web App (PWA) -->
+    <link rel="manifest" href="/manifest.json" />
+    <!-- بەکارهێنانی Tailwind CSS لە ڕێگەی CDN بۆ ستایلکردن -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* ئیمپۆرتکردنی فۆنتی 'Noto Sans Arabic' لە Google Fonts بۆ پشتگیری زمانی کوردی */
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap');
+      
+      /* دانانی فۆنتی بنەڕەتی بۆ هەموو لاپەڕەکە */
+      body {
+        font-family: 'Noto Sans Arabic', sans-serif;
+      }
+
+      /* ستایل بۆ دروستکردنی تێکستی ڕەنگاوڕەنگی جوڵاو */
+      .animated-gradient-text {
+        background: linear-gradient(90deg, #22d3ee, #818cf8, #c084fc);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradient-text-flow 4s linear infinite;
+      }
+      @keyframes gradient-text-flow {
+        from { background-position: 0% center; }
+        to { background-position: 200% center; }
+      }
+      
+      /* ستایلی تایبەت بە سکڕۆڵبار */
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1e293b; /* slate-800 */
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #475569; /* slate-600 */
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #64748b; /* slate-500 */
+      }
+
+      /* ئەنیمەیشنەکان */
+      /* Animations */
+      @keyframes slide-in-bottom {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      .animate-slide-in-bottom {
+        animation: slide-in-bottom 0.4s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+      }
+      
+      @keyframes fade-out {
+        from { opacity: 1; }
+        to { opacity: 0; }
+      }
+      .animate-fade-out {
+        animation: fade-out 1s ease-out 2s forwards;
+      }
+
+      /* ئەنیمەیشنی لەرینەوەی ئایکۆنی مایکرۆفۆن */
+      /* Microphone Pulse Animation */
+      @keyframes mic-pulse {
+        0%, 100% {
+          box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
+        }
+        50% {
+          box-shadow: 0 0 0 10px rgba(22, 163, 74, 0);
+        }
+      }
+      .mic-pulse {
+        animation: mic-pulse 1.5s infinite;
+      }
+
+      /* ستایلەکان بۆ react-markdown (prose) */
+      /* Styles for react-markdown (prose) */
+      .prose-invert {
+        color: #d1d5db; /* gray-300 */
+      }
+      .prose-invert h1, .prose-invert h2, .prose-invert h3, .prose-invert h4 {
+        color: #ffffff;
+      }
+      .prose-invert a {
+        color: #67e8f9; /* cyan-300 */
+        text-decoration: none;
+      }
+      .prose-invert a:hover {
+        text-decoration: underline;
+      }
+      .prose-invert strong {
+        color: #ffffff;
+      }
+      .prose-invert blockquote {
+        border-right-color: #475569; /* slate-600 */
+        color: #94a3b8; /* slate-400 */
+        padding-right: 1em;
+        padding-left: 0;
+        margin-right: 0;
+      }
+      .prose-invert ul > li::before {
+        background-color: #64748b; /* slate-500 */
+      }
+      .prose-invert hr {
+        border-color: #334155; /* slate-700 */
+      }
+      .prose-invert pre {
+        background-color: transparent !important;
+        padding: 0 !important;
+      }
+      .prose-invert code:not([class*="language-"]) {
+        background-color: #334155; /* slate-700 */
+        color: #e2e8f0; /* slate-200 */
+        padding: 0.2em 0.4em;
+        border-radius: 0.25rem;
+        font-size: 85%;
+      }
+      .prose-invert table {
+          width: 100%;
+          border-collapse: collapse;
+      }
+      .prose-invert th, .prose-invert td {
+          border: 1px solid #475569; /* slate-600 */
+          padding: 0.5em 1em;
+      }
+      .prose-invert thead {
+          background-color: #1e293b; /* slate-800 */
+      }
+    </style>
+  <!-- 
+    Import Map: ڕێگە بە وێبگەڕ دەدات کە ناوی مۆدیولەکان (بۆ نموونە 'react') 
+    بگۆڕێت بۆ URLی تەواو. ئەمە وا دەکات بتوانین 'import' بەکاربهێنین 
+    بێ ئەوەی پێویست بە 'build step' بکات.
+  -->
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.28.0",
+    "react-markdown": "https://aistudiocdn.com/react-markdown@^10.1.0",
+    "remark-gfm": "https://aistudiocdn.com/remark-gfm@^4.0.0",
+    "react-syntax-highlighter": "https://esm.sh/react-syntax-highlighter@15.5.0",
+    "react-syntax-highlighter/": "https://esm.sh/react-syntax-highlighter@15.5.0/"
+  }
+}
+</script>
+</head>
+  <body>
+    <!-- ئەم div-ە 'root'-ی ئەپڵیکەیشنەکەیە، کە ڕیاکت هەموو شتێکی تێدا ڕێندەر دەکات -->
+    <div id="root"></div>
+    <!-- ئیمپۆرتکردنی فایلی سەرەکی جاڤاسکریپت (TSX) کە ئەپەکەی تێدایە -->
+    <script type="module" src="/index.tsx"></script>
+    <!-- 
+      سکریپت بۆ تۆمارکردنی Service Worker.
+      Service Worker ڕێگە دەدات ئەپەکە ئۆفلاین کاربکات و خێراتر بارببێتەوە 
+      لە ڕێگەی کاشکردنی فایلەکان.
+    -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').then(registration => {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          }, err => {
+            console.log('ServiceWorker registration failed: ', err);
+          });
+        });
+      }
+    </script>
+  </body>
+</html>
